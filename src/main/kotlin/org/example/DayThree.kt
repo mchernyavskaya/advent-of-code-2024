@@ -1,8 +1,6 @@
 package org.example
 
-import org.checkerframework.common.returnsreceiver.qual.This
 import java.io.File
-import kotlin.math.absoluteValue
 
 class DayThree(private val input: String) {
     private val rx1 = "mul\\((\\d+),(\\d+)\\)".toRegex()
