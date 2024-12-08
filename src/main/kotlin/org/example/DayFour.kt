@@ -8,6 +8,7 @@ enum class Direction { N, S, W, E, NW, NE, SW, SE }
 class DayFour(private val inputRows: List<String>) {
     private val word = "XMAS"
     private val size = inputRows.size
+    private val rx = "^MS$|^SM$".toRegex()
 
     private fun wordsFrom(ic: IndexedChar, w: String, acc: ArrayList<IndexedChar>, d: Direction): Int {
         if (!w.startsWith(ic.c)) {
@@ -57,11 +58,34 @@ class DayFour(private val inputRows: List<String>) {
         return (x >= 0) && (x < size) && (y >= 0) && (y < size)
     }
 
+    private fun countXMasFrom(x: Int, y: Int): Int {
+        if (inputRows[x][y] != 'A') {
+            return 0
+        }
+        // it is either above and below or left and right
+        // but the points are the same
+        val tl = Pair(x - 1, y - 1)
+        val tr = Pair(x - 1, y + 1)
+        val bl = Pair(x + 1, y - 1)
+        val br = Pair(x + 1, y + 1)
+        if (isValidPoint(tl.first, tl.second) && isValidPoint(bl.first, bl.second) &&
+            isValidPoint(tr.first, tr.second) && isValidPoint(br.first, br.second)
+        ) {
+            if (rx.matches("${inputRows[tl.first][tl.second]}${inputRows[br.first][br.second]}") &&
+                rx.matches("${inputRows[tr.first][tr.second]}${inputRows[bl.first][bl.second]}")
+            ) {
+                return 1
+            }
+        }
+        return 0
+    }
+
     fun solution(): Int {
         var result = 0
         for (i in 0..<size) {
             for (j in 0..<size) {
-                result += wordsFrom(i, j)
+                // result += wordsFrom(i, j)
+                result += countXMasFrom(i, j)
             }
         }
         return result
